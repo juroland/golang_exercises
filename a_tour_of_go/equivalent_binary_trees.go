@@ -8,16 +8,16 @@ import (
 // Walk walks the tree t sending all values
 // from the tree to the channel ch.
 func Walk(t *tree.Tree, ch chan int) {
-    var recurseWalk func(t *tree.Tree)
-    recurseWalk = func(t *tree.Tree) {
-	   if t != nil {
-		  recurseWalk(t.Left)
-		  ch <- t.Value
-		  recurseWalk(t.Right)
-	   }
-    }
+	var recurseWalk func(t *tree.Tree)
+	recurseWalk = func(t *tree.Tree) {
+		if t != nil {
+			recurseWalk(t.Left)
+			ch <- t.Value
+			recurseWalk(t.Right)
+		}
+	}
 	recurseWalk(t)
-    close(ch)
+	close(ch)
 }
 
 // Same determines whether the trees
@@ -25,14 +25,14 @@ func Walk(t *tree.Tree, ch chan int) {
 func Same(t1, t2 *tree.Tree) bool {
 	ch1 := make(chan int)
 	ch2 := make(chan int)
-    go Walk(t1, ch1)
-    go Walk(t2, ch2)
+	go Walk(t1, ch1)
+	go Walk(t2, ch2)
 	for val1 := range ch1 {
 		if val1 != <-ch2 {
 			return false
 		}
 	}
-	_, values := <- ch2
+	_, values := <-ch2
 	return !values
 }
 
